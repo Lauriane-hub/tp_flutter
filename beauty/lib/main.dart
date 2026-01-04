@@ -4,7 +4,7 @@ void main() {
   runApp(const SkincareApp());
 }
 
-// --- 1. MODÈLE DE DONNÉES (Mis à jour avec catégorie) ---
+// --- 1. MODÈLE DE DONNÉES ---
 class Product {
   final String name;
   final String brand;
@@ -12,7 +12,7 @@ class Product {
   final String description;
   final String imageUrl;
   final String size;
-  final String category; // Ajouté pour le filtrage
+  final String category;
 
   Product({
     required this.name,
@@ -25,14 +25,14 @@ class Product {
   });
 }
 
-// Données avec catégories pour le test
+// Données dynamiques
 final List<Product> demoProducts = [
   Product(
     name: "Green Grape",
     brand: "Re:dence",
     price: 160.0,
     category: "Women",
-    description: "Green Grape Pore Zero Ampoule by Re:dence is a lightweight facial serum designed to refine pores, balance oil, and hydrate skin.",
+    description: "Green Grape Pore Zero Ampoule by Re:dence is a lightweight facial serum designed to refine pores, balance oil, and hydrate skin. 30ml bottle for daily skincare use for glowing skin.",
     imageUrl: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=500", 
   ),
   Product(
@@ -40,7 +40,7 @@ final List<Product> demoProducts = [
     brand: "Natural Serum",
     price: 150.0,
     category: "Women",
-    description: "A natural cleanser for delicate skin designed to refresh and protect.",
+    description: "A natural cleanser for delicate skin designed to refresh and protect your natural skin barrier while providing deep hydration.",
     imageUrl: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=500",
   ),
   Product(
@@ -48,7 +48,7 @@ final List<Product> demoProducts = [
     brand: "Vitamin C",
     price: 120.0,
     category: "Man",
-    description: "Brightening serum for a natural glow and even skin tone.",
+    description: "Brightening serum for a natural glow and even skin tone. Formulated with pure Vitamin C and antioxidants.",
     imageUrl: "https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=500",
   ),
 ];
@@ -82,21 +82,51 @@ class OnboardingScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned.fill(child: Image.network('https://images.unsplash.com/photo-1552046122-03184de85e08?q=80&w=1000', fit: BoxFit.cover)),
-          Positioned.fill(child: Container(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withOpacity(0.8)])))),
+          Positioned.fill(
+            child: Image.network(
+              'https://images.unsplash.com/photo-1552046122-03184de85e08?q=80&w=1000', 
+              fit: BoxFit.cover,
+              errorBuilder: (c, e, s) => Container(color: Colors.grey),
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+                ),
+              ),
+            ),
+          ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(30.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const Text("Skincare Product\n& Cosmetics", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold, height: 1.1)),
+                  const Text(
+                    "Skincare Product\n& Cosmetics",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold, height: 1.1),
+                  ),
+                  const SizedBox(height: 15),
+                  const Text(
+                    "Beauty gives you the confidence\nyou deserve",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white70, fontSize: 16),
+                  ),
                   const SizedBox(height: 40),
                   SizedBox(
                     width: double.infinity, height: 65,
                     child: ElevatedButton(
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen())),
-                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryLime, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)), elevation: 0),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryLime, 
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)), 
+                        elevation: 0,
+                      ),
                       child: const Text("Get Started", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
                     ),
                   ),
@@ -111,7 +141,7 @@ class OnboardingScreen extends StatelessWidget {
   }
 }
 
-// --- 4. ÉCRAN 2 : ACCUEIL (AVEC FILTRAGE DYNAMIQUE) ---
+// --- 4. ÉCRAN 2 : ACCUEIL ---
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -122,14 +152,24 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String selectedCategory = "All";
   int selectedNavIndex = 0;
-  final List<String> categories = ["All", "Women", "Man", "Kids"];
+  bool isSearching = false;
+  String searchQuery = "";
+  final TextEditingController searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    searchController.dispose(); // Bonne pratique : on libère la mémoire
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // LOGIQUE DE FILTRAGE : On crée une liste qui contient uniquement les produits de la catégorie choisie
-    List<Product> filteredProducts = selectedCategory == "All" 
-        ? demoProducts 
-        : demoProducts.where((p) => p.category == selectedCategory).toList();
+    // Filtrage dynamique combiné
+    List<Product> filteredProducts = demoProducts.where((p) {
+      bool categoryMatch = selectedCategory == "All" || p.category == selectedCategory;
+      bool searchMatch = p.name.toLowerCase().contains(searchQuery.toLowerCase());
+      return categoryMatch && searchMatch;
+    }).toList();
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -139,21 +179,47 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Header dynamique
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text("Best Skincare", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                    Row(
-                      children: [
-                        IconButton(icon: const Icon(Icons.search, size: 28), onPressed: () {}),
-                        IconButton(icon: const Icon(Icons.shopping_bag_outlined, size: 28), onPressed: () {}),
-                      ],
-                    )
+                    if (!isSearching)
+                      const Text("Best Skincare", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
+                    else
+                      Expanded(
+                        child: TextField(
+                          controller: searchController,
+                          autofocus: true,
+                          decoration: InputDecoration(
+                            hintText: "Search products...",
+                            border: InputBorder.none,
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: () {
+                                setState(() {
+                                  isSearching = false;
+                                  searchQuery = "";
+                                  searchController.clear();
+                                });
+                              },
+                            ),
+                          ),
+                          onChanged: (value) => setState(() => searchQuery = value),
+                        ),
+                      ),
+                    if (!isSearching)
+                      Row(
+                        children: [
+                          IconButton(icon: const Icon(Icons.search, size: 28), onPressed: () => setState(() => isSearching = true)),
+                          IconButton(icon: const Icon(Icons.shopping_bag_outlined, size: 28), onPressed: () {}),
+                        ],
+                      )
                   ],
                 ),
               ),
+              // Bannière Promo
               Container(
                 width: double.infinity, height: 160,
                 decoration: BoxDecoration(color: AppColors.primaryLime, borderRadius: BorderRadius.circular(25)),
@@ -182,20 +248,22 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 25),
               const Text("Collections", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 15),
+              // Catégories
               SizedBox(
                 height: 45,
-                child: ListView.builder(
+                child: ListView(
                   scrollDirection: Axis.horizontal,
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) => _buildCategoryChip(categories[index]),
+                  children: ["All", "Women", "Man", "Kids"].map((cat) => _buildCategoryChip(cat)).toList(),
                 ),
               ),
               const SizedBox(height: 25),
-              // Grille de produits FILTRÉE
-              GridView.builder(
+              // Grille de produits
+              filteredProducts.isEmpty 
+                ? const Center(child: Padding(padding: EdgeInsets.all(40), child: Text("No results found")))
+                : GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: filteredProducts.length, // Utilise la liste filtrée
+                itemCount: filteredProducts.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.7, crossAxisSpacing: 15, mainAxisSpacing: 15),
                 itemBuilder: (context, index) {
                   final product = filteredProducts[index];
@@ -218,7 +286,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 10),
                         Text(product.brand, style: const TextStyle(color: Colors.grey, fontSize: 12)),
                         Text(product.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                        Text("\$${product.price}", style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text("\$${product.price.toInt()}", style: const TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
                   );
@@ -239,7 +307,10 @@ class _HomeScreenState extends State<HomeScreen> {
             IconData icon = [Icons.home_filled, Icons.search, Icons.favorite_border, Icons.person_outline][index];
             return IconButton(
               icon: Icon(icon, color: selectedNavIndex == index ? Colors.black : Colors.grey),
-              onPressed: () => setState(() => selectedNavIndex = index),
+              onPressed: () {
+                setState(() => selectedNavIndex = index);
+                if(index == 1) setState(() => isSearching = true);
+              },
             );
           }),
         ),
