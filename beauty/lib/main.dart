@@ -4,7 +4,7 @@ void main() {
   runApp(const SkincareApp());
 }
 
-// --- 1. MODÈLE DE DONNÉES ---
+// --- 1. MODÈLE DE DONNÉES (Mis à jour avec catégorie) ---
 class Product {
   final String name;
   final String brand;
@@ -12,6 +12,7 @@ class Product {
   final String description;
   final String imageUrl;
   final String size;
+  final String category; // Ajouté pour le filtrage
 
   Product({
     required this.name,
@@ -19,30 +20,35 @@ class Product {
     required this.price,
     required this.description,
     required this.imageUrl,
+    required this.category,
     this.size = "30ml",
   });
 }
 
+// Données avec catégories pour le test
 final List<Product> demoProducts = [
   Product(
     name: "Green Grape",
     brand: "Re:dence",
     price: 160.0,
-    description: "Green Grape Pore Zero Ampoule by Re:dence is a lightweight facial serum designed to refine pores, balance oil, and hydrate skin. 30ml bottle for daily skincare use for glowing skin.",
+    category: "Women",
+    description: "Green Grape Pore Zero Ampoule by Re:dence is a lightweight facial serum designed to refine pores, balance oil, and hydrate skin.",
     imageUrl: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=500", 
   ),
   Product(
     name: "Greenling",
     brand: "Natural Serum",
     price: 150.0,
-    description: "A natural cleanser for delicate skin designed to refresh and protect your natural barrier.",
+    category: "Women",
+    description: "A natural cleanser for delicate skin designed to refresh and protect.",
     imageUrl: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=500",
   ),
   Product(
     name: "Glowish",
     brand: "Vitamin C",
     price: 120.0,
-    description: "Brightening serum for a natural glow and even skin tone. Formulated with pure Vitamin C.",
+    category: "Man",
+    description: "Brightening serum for a natural glow and even skin tone.",
     imageUrl: "https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=500",
   ),
 ];
@@ -105,7 +111,7 @@ class OnboardingScreen extends StatelessWidget {
   }
 }
 
-// --- 4. ÉCRAN 2 : ACCUEIL ---
+// --- 4. ÉCRAN 2 : ACCUEIL (AVEC FILTRAGE DYNAMIQUE) ---
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -120,6 +126,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // LOGIQUE DE FILTRAGE : On crée une liste qui contient uniquement les produits de la catégorie choisie
+    List<Product> filteredProducts = selectedCategory == "All" 
+        ? demoProducts 
+        : demoProducts.where((p) => p.category == selectedCategory).toList();
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -143,7 +154,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              // Bannière
               Container(
                 width: double.infinity, height: 160,
                 decoration: BoxDecoration(color: AppColors.primaryLime, borderRadius: BorderRadius.circular(25)),
@@ -181,14 +191,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 25),
-              // Grille de produits
+              // Grille de produits FILTRÉE
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: demoProducts.length,
+                itemCount: filteredProducts.length, // Utilise la liste filtrée
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.7, crossAxisSpacing: 15, mainAxisSpacing: 15),
                 itemBuilder: (context, index) {
-                  final product = demoProducts[index];
+                  final product = filteredProducts[index];
                   return GestureDetector(
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DetailScreen(product: product))),
                     child: Column(
@@ -255,7 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// --- 5. ÉCRAN 3 : DÉTAILS (VERSION FINALE FIDÈLE À L'IMAGE) ---
+// --- 5. ÉCRAN 3 : DÉTAILS ---
 class DetailScreen extends StatefulWidget {
   final Product product;
   const DetailScreen({super.key, required this.product});
@@ -287,7 +297,6 @@ class _DetailScreenState extends State<DetailScreen> {
       ),
       body: Column(
         children: [
-          // Haut de l'écran avec l'image (Background gris)
           Expanded(
             flex: 4,
             child: Center(
@@ -297,7 +306,6 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
             ),
           ),
-          // Bas de l'écran (Panneau blanc arrondi)
           Expanded(
             flex: 6,
             child: Container(
@@ -310,7 +318,6 @@ class _DetailScreenState extends State<DetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Nom et Favori
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -324,17 +331,12 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                   Text(widget.product.size, style: const TextStyle(color: Colors.grey, fontSize: 18)),
                   const SizedBox(height: 30),
-                  
-                  // Quantité et Prix
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: AppColors.lightGrey,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                        decoration: BoxDecoration(color: AppColors.lightGrey, borderRadius: BorderRadius.circular(30)),
                         child: Row(
                           children: [
                             IconButton(onPressed: () => setState(() => quantity > 1 ? quantity-- : null), icon: const Icon(Icons.remove)),
@@ -347,28 +349,15 @@ class _DetailScreenState extends State<DetailScreen> {
                     ],
                   ),
                   const SizedBox(height: 35),
-                  
-                  // Détails du produit
                   const Text("Product Details", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 12),
-                  Text(
-                    widget.product.description,
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 15, height: 1.5),
-                  ),
+                  Text(widget.product.description, style: TextStyle(color: Colors.grey.shade600, fontSize: 15, height: 1.5)),
                   const Spacer(),
-                  
-                  // Bouton Buy Now
                   SizedBox(
-                    width: double.infinity,
-                    height: 65,
+                    width: double.infinity, height: 65,
                     child: ElevatedButton(
                       onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryLime,
-                        foregroundColor: Colors.black,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
-                      ),
+                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryLime, foregroundColor: Colors.black, elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35))),
                       child: const Text("Buy Now", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                     ),
                   ),
