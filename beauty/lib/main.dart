@@ -11,6 +11,7 @@ class Product {
   final double price;
   final String description;
   final String imageUrl;
+  final String size;
 
   Product({
     required this.name,
@@ -18,6 +19,7 @@ class Product {
     required this.price,
     required this.description,
     required this.imageUrl,
+    this.size = "30ml",
   });
 }
 
@@ -26,21 +28,21 @@ final List<Product> demoProducts = [
     name: "Green Grape",
     brand: "Re:dence",
     price: 160.0,
-    description: "Description de Green Grape...",
+    description: "Green Grape Pore Zero Ampoule by Re:dence is a lightweight facial serum designed to refine pores, balance oil, and hydrate skin. 30ml bottle for daily skincare use for glowing skin.",
     imageUrl: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=500", 
   ),
   Product(
     name: "Greenling",
     brand: "Natural Serum",
     price: 150.0,
-    description: "Description de Greenling...",
+    description: "A natural cleanser for delicate skin designed to refresh and protect your natural barrier.",
     imageUrl: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=500",
   ),
   Product(
     name: "Glowish",
     brand: "Vitamin C",
     price: 120.0,
-    description: "Description de Glowish...",
+    description: "Brightening serum for a natural glow and even skin tone. Formulated with pure Vitamin C.",
     imageUrl: "https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=500",
   ),
 ];
@@ -85,8 +87,7 @@ class OnboardingScreen extends StatelessWidget {
                   const Text("Skincare Product\n& Cosmetics", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold, height: 1.1)),
                   const SizedBox(height: 40),
                   SizedBox(
-                    width: double.infinity,
-                    height: 65,
+                    width: double.infinity, height: 65,
                     child: ElevatedButton(
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen())),
                       style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryLime, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)), elevation: 0),
@@ -135,18 +136,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Text("Best Skincare", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                     Row(
                       children: [
-                        IconButton(icon: const Icon(Icons.search, size: 28), onPressed: () {
-                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Recherche cliquée")));
-                        }),
+                        IconButton(icon: const Icon(Icons.search, size: 28), onPressed: () {}),
                         IconButton(icon: const Icon(Icons.shopping_bag_outlined, size: 28), onPressed: () {}),
                       ],
                     )
                   ],
                 ),
               ),
+              // Bannière
               Container(
-                width: double.infinity,
-                height: 160,
+                width: double.infinity, height: 160,
                 decoration: BoxDecoration(color: AppColors.primaryLime, borderRadius: BorderRadius.circular(25)),
                 child: Stack(
                   children: [
@@ -182,6 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 25),
+              // Grille de produits
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -255,29 +255,127 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// --- 5. ÉCRAN 3 : DÉTAILS (CORRIGÉ - VERSION MINIMALE) ---
-class DetailScreen extends StatelessWidget {
+// --- 5. ÉCRAN 3 : DÉTAILS (VERSION FINALE FIDÈLE À L'IMAGE) ---
+class DetailScreen extends StatefulWidget {
   final Product product;
   const DetailScreen({super.key, required this.product});
 
   @override
+  State<DetailScreen> createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  int quantity = 1;
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.lightGrey,
       appBar: AppBar(
-        backgroundColor: Colors.transparent, 
-        elevation: 0, 
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black), 
-          onPressed: () => Navigator.pop(context)
-        )
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            backgroundColor: Colors.white,
+            child: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+        ),
       ),
       body: Column(
         children: [
-          // Utilisation de product.imageUrl au lieu de productImageUrl
-          Expanded(child: Hero(tag: product.name, child: Image.network(product.imageUrl))),
-          Text(product.name, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          const Padding(padding: EdgeInsets.all(20), child: Text("Détails à venir à l'étape suivante...")),
+          // Haut de l'écran avec l'image (Background gris)
+          Expanded(
+            flex: 4,
+            child: Center(
+              child: Hero(
+                tag: widget.product.name,
+                child: Image.network(widget.product.imageUrl, fit: BoxFit.contain, width: MediaQuery.of(context).size.width * 0.7),
+              ),
+            ),
+          ),
+          // Bas de l'écran (Panneau blanc arrondi)
+          Expanded(
+            flex: 6,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.only(top: 40, left: 30, right: 30, bottom: 30),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(50)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Nom et Favori
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(widget.product.name, style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(color: AppColors.primaryLime, shape: BoxShape.circle),
+                        child: const Icon(Icons.favorite, color: Colors.white, size: 24),
+                      ),
+                    ],
+                  ),
+                  Text(widget.product.size, style: const TextStyle(color: Colors.grey, fontSize: 18)),
+                  const SizedBox(height: 30),
+                  
+                  // Quantité et Prix
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: AppColors.lightGrey,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Row(
+                          children: [
+                            IconButton(onPressed: () => setState(() => quantity > 1 ? quantity-- : null), icon: const Icon(Icons.remove)),
+                            Text("$quantity", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            IconButton(onPressed: () => setState(() => quantity++), icon: const Icon(Icons.add)),
+                          ],
+                        ),
+                      ),
+                      Text("\$${widget.product.price.toInt()}", style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                  const SizedBox(height: 35),
+                  
+                  // Détails du produit
+                  const Text("Product Details", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
+                  Text(
+                    widget.product.description,
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 15, height: 1.5),
+                  ),
+                  const Spacer(),
+                  
+                  // Bouton Buy Now
+                  SizedBox(
+                    width: double.infinity,
+                    height: 65,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryLime,
+                        foregroundColor: Colors.black,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
+                      ),
+                      child: const Text("Buy Now", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
