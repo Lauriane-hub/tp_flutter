@@ -11,7 +11,6 @@ class Product {
   final double price;
   final String description;
   final String imageUrl;
-  final String size;
   final String category;
 
   Product({
@@ -21,39 +20,39 @@ class Product {
     required this.description,
     required this.imageUrl,
     required this.category,
-    this.size = "30ml",
   });
 }
 
-// Données dynamiques
+// --- 2. DONNÉES (Image Sun Kids rectifiée avec une huile bébé) ---
 final List<Product> demoProducts = [
   Product(
-    name: "Green Grape",
-    brand: "Re:dence",
-    price: 160.0,
-    category: "Women",
-    description: "Green Grape Pore Zero Ampoule by Re:dence is a lightweight facial serum designed to refine pores, balance oil, and hydrate skin. 30ml bottle for daily skincare use for glowing skin.",
-    imageUrl: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=500", 
+    name: "Green Grape", brand: "Re:dence", price: 160.0, category: "Women",
+    description: "Sérum pour affiner les pores et lisser le grain de peau.",
+    imageUrl: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=500", 
   ),
   Product(
-    name: "Greenling",
-    brand: "Natural Serum",
-    price: 150.0,
-    category: "Women",
-    description: "A natural cleanser for delicate skin designed to refresh and protect your natural skin barrier while providing deep hydration.",
-    imageUrl: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=500",
+    name: "Pure Cleanser", brand: "Natural", price: 150.0, category: "Women",
+    description: "Nettoyant doux protecteur pour un usage quotidien.",
+    imageUrl: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80&w=500",
   ),
   Product(
-    name: "Glowish",
-    brand: "Vitamin C",
-    price: 120.0,
-    category: "Man",
-    description: "Brightening serum for a natural glow and even skin tone. Formulated with pure Vitamin C and antioxidants.",
-    imageUrl: "https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=500",
+    name: "Vitamin C", brand: "Glowish", price: 120.0, category: "Man",
+    description: "Sérum antioxydant puissant pour un teint éclatant.",
+    imageUrl: "https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&q=80&w=500",
+  ),
+  Product(
+    name: "Ocean Mask", brand: "Deep Blue", price: 75.0, category: "Man",
+    description: "Masque détox à l'argile marine pour purifier les pores.",
+    imageUrl: "https://images.unsplash.com/photo-1594434296621-5135131430b5?auto=format&fit=crop&q=80&w=500",
+  ),
+  Product(
+    name: "Sun Kids Oil", brand: "Kids Soft", price: 55.0, category: "Kids",
+    description: "Huile apaisante et hydratante type Johnson, idéale pour les bébés.",
+    // RECTIFICATION : Image d'huile pour bébé appropriée
+    imageUrl: "https://images.unsplash.com/photo-1619451422372-957dad041764?q=80&w=500",
   ),
 ];
 
-// --- 2. THEME ---
 class AppColors {
   static const Color primaryLime = Color(0xFFCEFE1C);
   static const Color background = Color(0xFFFDFDFD);
@@ -62,18 +61,17 @@ class AppColors {
 
 class SkincareApp extends StatelessWidget {
   const SkincareApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'sans-serif'),
-      home: const OnboardingScreen(),
+      home: const OnboardingScreen(), 
     );
   }
 }
 
-// --- 3. ÉCRAN 1 : ONBOARDING ---
+// --- ÉCRAN 0 : ONBOARDING ---
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
 
@@ -84,49 +82,24 @@ class OnboardingScreen extends StatelessWidget {
         children: [
           Positioned.fill(
             child: Image.network(
-              'https://images.unsplash.com/photo-1552046122-03184de85e08?q=80&w=1000', 
+              'https://images.unsplash.com/photo-1552046122-03184de85e08?q=80&w=1000',
               fit: BoxFit.cover,
-              errorBuilder: (c, e, s) => Container(color: Colors.grey),
             ),
           ),
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
-                ),
-              ),
-            ),
-          ),
+          Positioned.fill(child: Container(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withOpacity(0.8)])))),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(30.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const Text(
-                    "Skincare Product\n& Cosmetics",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold, height: 1.1),
-                  ),
-                  const SizedBox(height: 15),
-                  const Text(
-                    "Beauty gives you the confidence\nyou deserve",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
-                  ),
+                  const Text("Skincare Product\n& Cosmetics", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold, height: 1.1)),
                   const SizedBox(height: 40),
                   SizedBox(
                     width: double.infinity, height: 65,
                     child: ElevatedButton(
-                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HomeScreen())),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryLime, 
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)), 
-                        elevation: 0,
-                      ),
+                      onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const MainNavigation())),
+                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryLime, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)), elevation: 0),
                       child: const Text("Get Started", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
                     ),
                   ),
@@ -141,303 +114,336 @@ class OnboardingScreen extends StatelessWidget {
   }
 }
 
-// --- 4. ÉCRAN 2 : ACCUEIL ---
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+// --- NAVIGATION PRINCIPALE ---
+class MainNavigation extends StatefulWidget {
+  const MainNavigation({super.key});
+  @override
+  State<MainNavigation> createState() => _MainNavigationState();
+}
 
+class _MainNavigationState extends State<MainNavigation> {
+  int _currentIndex = 0;
+  final Set<String> favoriteNames = {};
+
+  void toggleFavorite(String name) {
+    setState(() {
+      if (favoriteNames.contains(name)) favoriteNames.remove(name);
+      else favoriteNames.add(name);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> screens = [
+      HomeScreen(favs: favoriteNames, onToggle: toggleFavorite),
+      SearchScreen(favs: favoriteNames, onToggle: toggleFavorite),
+      FavoritesScreen(favs: favoriteNames, onToggle: toggleFavorite),
+      const ProfileScreen(),
+    ];
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: screens[_currentIndex],
+      bottomNavigationBar: Container(
+        margin: const EdgeInsets.fromLTRB(20, 0, 20, 25),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(40), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20)]),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _navIcon(Icons.home_filled, 0),
+            _navIcon(Icons.search, 1),
+            _navIcon(Icons.favorite, 2),
+            _navIcon(Icons.person, 3),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _navIcon(IconData icon, int index) {
+    bool isSelected = _currentIndex == index;
+    return IconButton(
+      icon: Icon(icon, color: isSelected ? Colors.black : Colors.grey),
+      onPressed: () => setState(() => _currentIndex = index),
+    );
+  }
+}
+
+// --- ÉCRAN : ACCUEIL ---
+class HomeScreen extends StatefulWidget {
+  final Set<String> favs;
+  final Function(String) onToggle;
+  const HomeScreen({super.key, required this.favs, required this.onToggle});
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   String selectedCategory = "All";
-  int selectedNavIndex = 0;
-  bool isSearching = false;
-  String searchQuery = "";
-  final TextEditingController searchController = TextEditingController();
-
-  @override
-  void dispose() {
-    searchController.dispose(); // Bonne pratique : on libère la mémoire
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    // Filtrage dynamique combiné
-    List<Product> filteredProducts = demoProducts.where((p) {
-      bool categoryMatch = selectedCategory == "All" || p.category == selectedCategory;
-      bool searchMatch = p.name.toLowerCase().contains(searchQuery.toLowerCase());
-      return categoryMatch && searchMatch;
-    }).toList();
+    List<Product> products = demoProducts.where((p) => selectedCategory == "All" || p.category == selectedCategory).toList();
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("Best Skincare", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            _buildPromoBanner(),
+            const SizedBox(height: 30),
+            const Text("Collections", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 15),
+            _buildCategoryChips(),
+            const SizedBox(height: 25),
+            _buildProductGrid(products),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPromoBanner() {
+    return Container(
+      width: double.infinity, height: 160,
+      decoration: BoxDecoration(color: AppColors.primaryLime, borderRadius: BorderRadius.circular(25)),
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("New Collection\nDelicate Skin", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  // RECTIFICATION : Activation du bouton Shop Now
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const NewCollectionPage())),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Colors.black, shape: const StadiumBorder(), elevation: 0),
+                  child: const Text("Shop Now", style: TextStyle(fontSize: 12)),
+                )
+              ],
+            ),
+          ),
+          Positioned(right: -10, bottom: 0, child: Image.network("https://www.pngmart.com/files/12/Cosmetic-Products-PNG-Clipart.png", height: 120, errorBuilder: (c,e,s) => const SizedBox())),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryChips() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: ["All", "Women", "Man", "Kids"].map((cat) {
+          bool isSelected = selectedCategory == cat;
+          return Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: ChoiceChip(
+              label: Text(cat),
+              selected: isSelected,
+              onSelected: (_) => setState(() => selectedCategory = cat),
+              selectedColor: Colors.black,
+              labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildProductGrid(List<Product> list) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: list.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.7, crossAxisSpacing: 15, mainAxisSpacing: 15),
+      itemBuilder: (context, index) {
+        final p = list[index];
+        bool isFav = widget.favs.contains(p.name);
+        return GestureDetector(
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailPage(product: p))),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header dynamique
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    if (!isSearching)
-                      const Text("Best Skincare", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
-                    else
-                      Expanded(
-                        child: TextField(
-                          controller: searchController,
-                          autofocus: true,
-                          decoration: InputDecoration(
-                            hintText: "Search products...",
-                            border: InputBorder.none,
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.close),
-                              onPressed: () {
-                                setState(() {
-                                  isSearching = false;
-                                  searchQuery = "";
-                                  searchController.clear();
-                                });
-                              },
-                            ),
-                          ),
-                          onChanged: (value) => setState(() => searchQuery = value),
-                        ),
-                      ),
-                    if (!isSearching)
-                      Row(
-                        children: [
-                          IconButton(icon: const Icon(Icons.search, size: 28), onPressed: () => setState(() => isSearching = true)),
-                          IconButton(icon: const Icon(Icons.shopping_bag_outlined, size: 28), onPressed: () {}),
-                        ],
-                      )
-                  ],
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(color: AppColors.lightGrey, borderRadius: BorderRadius.circular(20)),
+                  child: Stack(
+                    children: [
+                      Center(child: ClipRRect(borderRadius: BorderRadius.circular(20), child: Image.network(p.imageUrl, fit: BoxFit.cover, width: double.infinity, height: double.infinity, errorBuilder: (c,e,s) => const Icon(Icons.image)))),
+                      Positioned(top: 5, right: 5, child: IconButton(icon: Icon(isFav ? Icons.favorite : Icons.favorite_border, color: isFav ? Colors.red : Colors.black), onPressed: () => widget.onToggle(p.name))),
+                    ],
+                  ),
                 ),
               ),
-              // Bannière Promo
-              Container(
-                width: double.infinity, height: 160,
-                decoration: BoxDecoration(color: AppColors.primaryLime, borderRadius: BorderRadius.circular(25)),
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(25.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text("New Collection for\nDelicate skin", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          const SizedBox(height: 15),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
-                            child: const Text("Shop Now", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                          )
-                        ],
-                      ),
-                    ),
-                    Positioned(right: 10, bottom: 0, top: 10, child: Image.network('https://www.pngmart.com/files/12/Cosmetic-Products-PNG-Clipart.png', errorBuilder: (c,e,s) => const SizedBox())),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 25),
-              const Text("Collections", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 15),
-              // Catégories
-              SizedBox(
-                height: 45,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: ["All", "Women", "Man", "Kids"].map((cat) => _buildCategoryChip(cat)).toList(),
-                ),
-              ),
-              const SizedBox(height: 25),
-              // Grille de produits
-              filteredProducts.isEmpty 
-                ? const Center(child: Padding(padding: EdgeInsets.all(40), child: Text("No results found")))
-                : GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: filteredProducts.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.7, crossAxisSpacing: 15, mainAxisSpacing: 15),
-                itemBuilder: (context, index) {
-                  final product = filteredProducts[index];
-                  return GestureDetector(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => DetailScreen(product: product))),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(color: AppColors.lightGrey, borderRadius: BorderRadius.circular(20)),
-                            child: Stack(
-                              children: [
-                                Center(child: Hero(tag: product.name, child: Image.network(product.imageUrl, fit: BoxFit.contain))),
-                                const Positioned(top: 12, right: 12, child: Icon(Icons.favorite_border, size: 22)),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(product.brand, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                        Text(product.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                        Text("\$${product.price.toInt()}", style: const TextStyle(fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 100),
+              const SizedBox(height: 8),
+              Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
+              Text("\$${p.price.toInt()}", style: const TextStyle(color: Colors.grey)),
             ],
           ),
-        ),
-      ),
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(40), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 20)]),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List.generate(4, (index) {
-            IconData icon = [Icons.home_filled, Icons.search, Icons.favorite_border, Icons.person_outline][index];
-            return IconButton(
-              icon: Icon(icon, color: selectedNavIndex == index ? Colors.black : Colors.grey),
-              onPressed: () {
-                setState(() => selectedNavIndex = index);
-                if(index == 1) setState(() => isSearching = true);
-              },
-            );
-          }),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCategoryChip(String label) {
-    bool isSelected = selectedCategory == label;
-    return GestureDetector(
-      onTap: () => setState(() => selectedCategory = label),
-      child: Container(
-        margin: const EdgeInsets.only(right: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.black : Colors.white,
-          borderRadius: BorderRadius.circular(25),
-          border: Border.all(color: Colors.grey.shade200),
-        ),
-        child: Center(child: Text(label, style: TextStyle(color: isSelected ? Colors.white : Colors.black, fontWeight: FontWeight.bold))),
-      ),
+        );
+      },
     );
   }
 }
 
-// --- 5. ÉCRAN 3 : DÉTAILS ---
-class DetailScreen extends StatefulWidget {
+// --- ÉCRAN : DÉTAILS DU PRODUIT (Prix actualisé) ---
+class ProductDetailPage extends StatefulWidget {
   final Product product;
-  const DetailScreen({super.key, required this.product});
-
+  const ProductDetailPage({super.key, required this.product});
   @override
-  State<DetailScreen> createState() => _DetailScreenState();
+  State<ProductDetailPage> createState() => _ProductDetailPageState();
 }
 
-class _DetailScreenState extends State<DetailScreen> {
+class _ProductDetailPageState extends State<ProductDetailPage> {
   int quantity = 1;
 
   @override
   Widget build(BuildContext context) {
+    double totalPrice = widget.product.price * quantity;
+
     return Scaffold(
-      backgroundColor: AppColors.lightGrey,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
-        ),
-      ),
+      backgroundColor: Colors.white,
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0, foregroundColor: Colors.black),
       body: Column(
         children: [
           Expanded(
-            flex: 4,
-            child: Center(
-              child: Hero(
-                tag: widget.product.name,
-                child: Image.network(widget.product.imageUrl, fit: BoxFit.contain, width: MediaQuery.of(context).size.width * 0.7),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 6,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.only(top: 40, left: 30, right: 30, bottom: 30),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(50)),
-              ),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(widget.product.name, style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(color: AppColors.primaryLime, shape: BoxShape.circle),
-                        child: const Icon(Icons.favorite, color: Colors.white, size: 24),
-                      ),
-                    ],
-                  ),
-                  Text(widget.product.size, style: const TextStyle(color: Colors.grey, fontSize: 18)),
+                  Center(child: ClipRRect(borderRadius: BorderRadius.circular(30), child: Image.network(widget.product.imageUrl, height: 300, fit: BoxFit.cover))),
                   const SizedBox(height: 30),
+                  Text(widget.product.brand, style: const TextStyle(color: Colors.grey, fontSize: 16)),
+                  const SizedBox(height: 5),
+                  Text(widget.product.name, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 20),
+                  const Text("Description", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  Text(widget.product.description, style: const TextStyle(color: Colors.grey, fontSize: 16, height: 1.5)),
+                  const SizedBox(height: 30),
+                  const Text("Quantity", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 15),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(color: AppColors.lightGrey, borderRadius: BorderRadius.circular(30)),
-                        child: Row(
-                          children: [
-                            IconButton(onPressed: () => setState(() => quantity > 1 ? quantity-- : null), icon: const Icon(Icons.remove)),
-                            Text("$quantity", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                            IconButton(onPressed: () => setState(() => quantity++), icon: const Icon(Icons.add)),
-                          ],
-                        ),
-                      ),
-                      Text("\$${widget.product.price.toInt()}", style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+                      _qtyBtn(Icons.remove, () { if(quantity > 1) setState(() => quantity--); }),
+                      Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: Text("$quantity", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
+                      _qtyBtn(Icons.add, () => setState(() => quantity++)),
                     ],
-                  ),
-                  const SizedBox(height: 35),
-                  const Text("Product Details", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 12),
-                  Text(widget.product.description, style: TextStyle(color: Colors.grey.shade600, fontSize: 15, height: 1.5)),
-                  const Spacer(),
-                  SizedBox(
-                    width: double.infinity, height: 65,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryLime, foregroundColor: Colors.black, elevation: 0, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35))),
-                      child: const Text("Buy Now", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    ),
                   ),
                 ],
               ),
             ),
           ),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -5))]),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Total Price", style: TextStyle(color: Colors.grey)),
+                      Text("\$${totalPrice.toInt()}", style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 60, width: 180,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryLime, foregroundColor: Colors.black, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)), elevation: 0),
+                    child: const Text("Buy Now", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _qtyBtn(IconData icon, VoidCallback action) => GestureDetector(
+    onTap: action,
+    child: Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(10)),
+      child: Icon(icon),
+    ),
+  );
+}
+
+// --- RECHERCHE ---
+class SearchScreen extends StatefulWidget {
+  final Set<String> favs;
+  final Function(String) onToggle;
+  const SearchScreen({super.key, required this.favs, required this.onToggle});
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  String query = "";
+  @override
+  Widget build(BuildContext context) {
+    List<Product> results = demoProducts.where((p) => p.name.toLowerCase().contains(query.toLowerCase())).toList();
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Container(padding: const EdgeInsets.symmetric(horizontal: 15), decoration: BoxDecoration(color: AppColors.lightGrey, borderRadius: BorderRadius.circular(15)), child: TextField(onChanged: (v) => setState(() => query = v), decoration: const InputDecoration(hintText: "Search...", border: InputBorder.none, icon: Icon(Icons.search)))),
+            const SizedBox(height: 20),
+            Expanded(child: GridView.builder(itemCount: results.length, gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.7, crossAxisSpacing: 15, mainAxisSpacing: 15), itemBuilder: (c, i) => _buildGridItem(results[i], context))),
+          ],
+        ),
+      ),
+    );
+  }
+  Widget _buildGridItem(Product p, context) => GestureDetector(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (c) => ProductDetailPage(product: p))), child: Column(children: [Expanded(child: Container(decoration: BoxDecoration(color: AppColors.lightGrey, borderRadius: BorderRadius.circular(20)), child: Center(child: Image.network(p.imageUrl, fit: BoxFit.cover)))), Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold))]));
+}
+
+// --- FAVORIS ---
+class FavoritesScreen extends StatelessWidget {
+  final Set<String> favs;
+  final Function(String) onToggle;
+  const FavoritesScreen({super.key, required this.favs, required this.onToggle});
+  @override
+  Widget build(BuildContext context) {
+    List<Product> list = demoProducts.where((p) => favs.contains(p.name)).toList();
+    return SafeArea(child: Padding(padding: const EdgeInsets.all(20), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [const Text("My Favorites", style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)), const SizedBox(height: 20), Expanded(child: GridView.builder(itemCount: list.length, gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, childAspectRatio: 0.7, crossAxisSpacing: 15, mainAxisSpacing: 15), itemBuilder: (c, i) => _buildGridItem(list[i], context)))])));
+  }
+  Widget _buildGridItem(Product p, context) => GestureDetector(onTap: () => Navigator.push(context, MaterialPageRoute(builder: (c) => ProductDetailPage(product: p))), child: Column(children: [Expanded(child: Container(decoration: BoxDecoration(color: AppColors.lightGrey, borderRadius: BorderRadius.circular(20)), child: Center(child: Image.network(p.imageUrl, fit: BoxFit.cover)))), Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold))]));
+}
+
+// --- PROFIL ---
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(child: Column(children: [const SizedBox(height: 40), const CircleAvatar(radius: 50, backgroundColor: AppColors.primaryLime, child: Icon(Icons.person, size: 50, color: Colors.black)), const SizedBox(height: 15), const Text("User Name", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)), const SizedBox(height: 30), _item(Icons.shopping_bag_outlined, "Orders"), _item(Icons.logout, "Logout")]));
+  }
+  Widget _item(IconData icon, String title) => ListTile(leading: Icon(icon), title: Text(title), trailing: const Icon(Icons.chevron_right));
+}
+
+// --- PAGE COLLECTION ---
+class NewCollectionPage extends StatelessWidget {
+  const NewCollectionPage({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("New Collection"), backgroundColor: Colors.white, foregroundColor: Colors.black, elevation: 0),
+      body: const Center(child: Text("Welcome to the Limited Edition Collection!")),
     );
   }
 }
